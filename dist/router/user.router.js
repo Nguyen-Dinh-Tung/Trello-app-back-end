@@ -40,7 +40,7 @@ usersRouter.post('/broad', async (req, res) => {
             });
         }
         res.status(200).json({
-            message: 'Create fail because valid'
+            message: 'Create fail because  not valid'
         });
     }
 });
