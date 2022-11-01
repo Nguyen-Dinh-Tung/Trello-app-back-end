@@ -1,0 +1,1 @@
+{"version":3,"file":"Broad.schema.js","sourceRoot":"","sources":["../../../src/models/schemas/Broad.schema.ts"],"names":[],"mappings":";;;;;AAAA,wDAA4C;AAE5C,MAAM,WAAW,GAAG,IAAI,kBAAQ,CAAC,MAAM,CAAC;IACtC,KAAK,EAAE,MAAM;IACb,IAAI,EAAE,MAAM;CACb,CAAC,CAAC;AAEH,MAAM,WAAW,GAAG,kBAAQ,CAAC,KAAK,CAAC,OAAO,EAAE,WAAW,CAAC,CAAC;AAEzD,kBAAe,WAAW,CAAC"}

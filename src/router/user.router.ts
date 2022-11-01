@@ -1,16 +1,16 @@
 import express from "express";
 import { Router, Request, Response } from "express";
-const AuthRouter = express.Router();
+const usersRouter = express.Router();
 import { userValidation, validateUserSignUp } from "../middleware/validation";
 
 import { UserController } from "../controllers/user.controller";
 
-AuthRouter.post("/login", (req, res, next) => {
+usersRouter.post("/login", (req, res, next) => {
   UserController.login(req, res).catch((err) => {
     next(err);
   });
 });
-AuthRouter.post(
+usersRouter.post(
   "/register",
   validateUserSignUp,
   userValidation,
@@ -21,10 +21,11 @@ AuthRouter.post(
   }
 );
 
-AuthRouter.post("/verify", (req, res, next) => {
+usersRouter.post("/verify", (req, res, next) => {
   UserController.verify(req, res).catch((err) => {
     next(err);
   });
 });
-
-export default AuthRouter;
+usersRouter.post('/broad', (req: Request, res: Response) => {
+})
+export default usersRouter;
