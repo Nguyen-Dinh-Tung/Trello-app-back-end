@@ -5,6 +5,6 @@ const broadSchema = new mongoose.Schema({
   mode: String,
 });
 
-const BroadModels = mongoose.model("Broad", broadSchema);
+const BroadModels = mongoose.model("broad", broadSchema);
 
 export default BroadModels;
