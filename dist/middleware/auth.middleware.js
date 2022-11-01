@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authLogin = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authLogin = (req, res, next) => {
-    let authorization = localStorage.getItem('token');
+    let authorization = localStorage.getItem("token");
     if (authorization) {
         let accessToken = authorization;
         if (!accessToken) {
@@ -25,7 +25,7 @@ const authLogin = (req, res, next) => {
                     }
                 }
                 else {
-                    res.render('product/login/404');
+                    res.status(401).json({ message: "Access token is required2." });
                 }
             });
         }

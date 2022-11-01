@@ -7,6 +7,15 @@ Content-Type: application/json
    "password":"123123" ,
    "confirmpassword":"123123"
 }
+###
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{
+   "email":"admin@gmail.com",
+   "password":"123123"
+
+}
 
 
 

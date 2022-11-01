@@ -3,9 +3,10 @@ import Users from "../models/schemas/user.schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import { senMail } from "../utils/mailer";
 dotenv.config();
+import { senMail } from "../utils/mailer";
 
+const refreshTokens = {};
 export class UserController {
   static async login(req: Request, res: Response) {
     let data = {
@@ -13,19 +14,17 @@ export class UserController {
       password: req.body.password,
     };
     let user = await Users.findOne({ email: data.email });
-    console.log(
-      "🚀 ~ file: user.controller.ts ~ line 44 ~ UserController ~ login ~ user",
-      user
-    );
     if (!user) {
       return res
         .status(200)
         .json({ message: "Đăng nhập thất bại! Vui lòng thử lại !" });
-    } else if (user.email_verify === "false") {
-      return res.status(200).json({
-        message: "Tài khoản chưa được xác thực. Vui lòng kiểm tra email !",
-      });
-    } else {
+    }
+    // else if (user.email_verify === "false") {
+    //   return res.status(200).json({
+    //     message: "Tài khoản chưa được xác thực. Vui lòng kiểm tra email !",
+    //   });
+    // }
+    else {
       let comparePassword = await bcrypt.compare(data.password, user.password);
       if (!comparePassword) {
         return res
@@ -38,12 +37,17 @@ export class UserController {
         };
         let secretKey = process.env.SECRET_KEY;
         let token = await jwt.sign(payload, secretKey, {
-          expiresIn: 36000000,
+          expiresIn: process.env.tokenLife,
+        });
+        // Tạo một mã token khác - Refresh token
+        const refreshToken = jwt.sign(payload, process.env.REFESTOKEN, {
+          expiresIn: process.env.refreshTokenLife,
         });
         const response = {
           token: token,
-          user: user,
+          refreshToken: refreshToken,
         };
+        refreshTokens[refreshToken] = response;
         return res
           .status(200)
           .json({ message: "Đăng nhập thành công !", data: response });
@@ -51,13 +55,19 @@ export class UserController {
     }
   }
 
+  static async token(req: Request, res: Response) {}
+
   static async register(req: Request, res: Response) {
     let user = req.body;
+    console.log(
+      "🚀 ~ file: user.controller.ts ~ line 62 ~ UserController ~ register ~ user",
+      user
+    );
     let Email = user.email;
     let userByEmail = await Users.findOne({ email: Email });
-    let userByUsername = await Users.findOne({ username: user.username });
-    if (userByUsername) {
-      return res.json({ message: "Username đã tồn tại !" });
+    let userByName = await Users.findOne({ name: user.name });
+    if (userByName) {
+      return res.json({ message: "Name đã tồn tại !" });
     } else if (userByEmail) {
       return res.json({ message: "Email đã tồn tại !" });
     } else {
@@ -67,12 +77,11 @@ export class UserController {
       );
 
       let data = {
-        firstname: user.firstname,
-        lastname: user.lastname,
-        username: user.username,
+        name: user.name,
         email: user.email,
         password: user.password,
         email_verify: false,
+        image: "",
       };
 
       let newUser = await Users.create(data, (err, user) => {

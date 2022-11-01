@@ -25,6 +25,12 @@ usersRouter.post("/verify", (req, res, next) => {
     next(err);
   });
 });
+usersRouter.post("/token", (req, res, next) => {
+  UserController.token(req, res).catch((err) => {
+    next(err);
+  });
+});
+
 usersRouter.post('/broad', async (req: Request, res: Response) => {
   let title = req.body.title;
   let mode = req.body.mode;

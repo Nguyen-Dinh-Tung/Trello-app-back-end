@@ -31,8 +31,9 @@ const user_schema_1 = __importDefault(require("../models/schemas/user.schema"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
-const mailer_1 = require("../utils/mailer");
 dotenv.config();
+const mailer_1 = require("../utils/mailer");
+const refreshTokens = {};
 class UserController {
     static async login(req, res) {
         let data = {
@@ -40,16 +41,10 @@ class UserController {
             password: req.body.password,
         };
         let user = await user_schema_1.default.findOne({ email: data.email });
-        console.log("🚀 ~ file: user.controller.ts ~ line 44 ~ UserController ~ login ~ user", user);
         if (!user) {
             return res
                 .status(200)
                 .json({ message: "Đăng nhập thất bại! Vui lòng thử lại !" });
-        }
-        else if (user.email_verify === "false") {
-            return res.status(200).json({
-                message: "Tài khoản chưa được xác thực. Vui lòng kiểm tra email !",
-            });
         }
         else {
             let comparePassword = await bcrypt_1.default.compare(data.password, user.password);
@@ -65,25 +60,31 @@ class UserController {
                 };
                 let secretKey = process.env.SECRET_KEY;
                 let token = await jsonwebtoken_1.default.sign(payload, secretKey, {
-                    expiresIn: 36000000,
+                    expiresIn: process.env.tokenLife,
+                });
+                const refreshToken = jsonwebtoken_1.default.sign(payload, process.env.REFESTOKEN, {
+                    expiresIn: process.env.refreshTokenLife,
                 });
                 const response = {
                     token: token,
-                    user: user,
+                    refreshToken: refreshToken,
                 };
+                refreshTokens[refreshToken] = response;
                 return res
                     .status(200)
                     .json({ message: "Đăng nhập thành công !", data: response });
             }
         }
     }
+    static async token(req, res) { }
     static async register(req, res) {
         let user = req.body;
+        console.log("🚀 ~ file: user.controller.ts ~ line 62 ~ UserController ~ register ~ user", user);
         let Email = user.email;
         let userByEmail = await user_schema_1.default.findOne({ email: Email });
-        let userByUsername = await user_schema_1.default.findOne({ username: user.username });
-        if (userByUsername) {
-            return res.json({ message: "Username đã tồn tại !" });
+        let userByName = await user_schema_1.default.findOne({ name: user.name });
+        if (userByName) {
+            return res.json({ message: "Name đã tồn tại !" });
         }
         else if (userByEmail) {
             return res.json({ message: "Email đã tồn tại !" });
@@ -91,12 +92,11 @@ class UserController {
         else {
             user.password = await bcrypt_1.default.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUND));
             let data = {
-                firstname: user.firstname,
-                lastname: user.lastname,
-                username: user.username,
+                name: user.name,
                 email: user.email,
                 password: user.password,
                 email_verify: false,
+                image: "",
             };
             let newUser = await user_schema_1.default.create(data, (err, user) => {
                 if (err) {
