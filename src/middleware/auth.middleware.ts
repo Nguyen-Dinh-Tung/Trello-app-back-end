@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 export const authLogin = (req: any, res: Response, next: NextFunction) => {
-  let authorization = localStorage.getItem("token");
+  let authorization =
+    req.body.token || req.query.token || req.headers["x-access-token"];
 
   if (authorization) {
     let accessToken = authorization;

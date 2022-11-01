@@ -37,11 +37,11 @@ export class UserController {
         };
         let secretKey = process.env.SECRET_KEY;
         let token = await jwt.sign(payload, secretKey, {
-          expiresIn: process.env.tokenLife,
+          expiresIn: 10,
         });
         // Tạo một mã token khác - Refresh token
         const refreshToken = jwt.sign(payload, process.env.REFESTOKEN, {
-          expiresIn: process.env.refreshTokenLife,
+          expiresIn: 300,
         });
         const response = {
           token: token,
@@ -55,7 +55,28 @@ export class UserController {
     }
   }
 
-  static async token(req: Request, res: Response) {}
+  static async token(req: Request, res: Response) {
+    // refresh the damn token
+    // const { refreshToken } = req.body;
+    // // if refresh token exists
+    // if (refreshToken && refreshToken in refreshTokens) {
+    //   const user = {
+    //     username: "anonystick.com",
+    //     role: "admin",
+    //   };
+    //   const token = jwt.sign(user, _CONF.SECRET, {
+    //     expiresIn: _CONF.tokenLife,
+    //   });
+    //   const response = {
+    //     token: token,
+    //   };
+    //   // update the token in the list
+    //   refreshTokens[refreshToken].token = token;
+    //   res.status(200).json(response);
+    // } else {
+    //   res.status(404).send("Invalid request");
+    // }
+  }
 
   static async register(req: Request, res: Response) {
     let user = req.body;

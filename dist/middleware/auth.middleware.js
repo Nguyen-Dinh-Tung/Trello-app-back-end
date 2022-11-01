@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authLogin = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const authLogin = (req, res, next) => {
-    let authorization = localStorage.getItem("token");
+    let authorization = req.body.token || req.query.token || req.headers["x-access-token"];
     if (authorization) {
         let accessToken = authorization;
         if (!accessToken) {
