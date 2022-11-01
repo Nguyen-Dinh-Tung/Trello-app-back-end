@@ -3,7 +3,7 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import AuthRouter from "./router/user.router";
+import usersRouter from "./router/user.router";
 
 const PORT = 8080;
 
@@ -25,7 +25,7 @@ db.connect()
 
 app.use(bodyParser.json());
 
-app.use("/", AuthRouter);
+app.use("/", usersRouter);
 
 app.listen(PORT, () => {
   console.log("App running on port: " + PORT);

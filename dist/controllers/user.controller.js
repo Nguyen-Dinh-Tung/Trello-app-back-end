@@ -41,7 +41,6 @@ class UserController {
             password: req.body.password,
         };
         let user = await user_schema_1.default.findOne({ email: data.email });
-        console.log("🚀 ~ file: user.controller.ts ~ line 44 ~ UserController ~ login ~ user", user);
         if (!user) {
             return res
                 .status(200)
@@ -77,15 +76,15 @@ class UserController {
             }
         }
     }
-    static async token(req, res) {
-    }
+    static async token(req, res) { }
     static async register(req, res) {
         let user = req.body;
+        console.log("🚀 ~ file: user.controller.ts ~ line 62 ~ UserController ~ register ~ user", user);
         let Email = user.email;
         let userByEmail = await user_schema_1.default.findOne({ email: Email });
-        let userByUsername = await user_schema_1.default.findOne({ username: user.username });
-        if (userByUsername) {
-            return res.json({ message: "Username đã tồn tại !" });
+        let userByName = await user_schema_1.default.findOne({ name: user.name });
+        if (userByName) {
+            return res.json({ message: "Name đã tồn tại !" });
         }
         else if (userByEmail) {
             return res.json({ message: "Email đã tồn tại !" });
@@ -93,12 +92,11 @@ class UserController {
         else {
             user.password = await bcrypt_1.default.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUND));
             let data = {
-                firstname: user.firstname,
-                lastname: user.lastname,
-                username: user.username,
+                name: user.name,
                 email: user.email,
                 password: user.password,
                 email_verify: false,
+                image: "",
             };
             let newUser = await user_schema_1.default.create(data, (err, user) => {
                 if (err) {
