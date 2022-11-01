@@ -3,9 +3,10 @@ import Users from "../models/schemas/user.schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
-import { senMail } from "../utils/mailer";
 dotenv.config();
+import { senMail } from "../utils/mailer";
 
+const refreshTokens = {};
 export class UserController {
   static async login(req: Request, res: Response) {
     let data = {
@@ -21,11 +22,13 @@ export class UserController {
       return res
         .status(200)
         .json({ message: "Đăng nhập thất bại! Vui lòng thử lại !" });
-    } else if (user.email_verify === "false") {
-      return res.status(200).json({
-        message: "Tài khoản chưa được xác thực. Vui lòng kiểm tra email !",
-      });
-    } else {
+    }
+    // else if (user.email_verify === "false") {
+    //   return res.status(200).json({
+    //     message: "Tài khoản chưa được xác thực. Vui lòng kiểm tra email !",
+    //   });
+    // }
+    else {
       let comparePassword = await bcrypt.compare(data.password, user.password);
       if (!comparePassword) {
         return res
@@ -38,17 +41,26 @@ export class UserController {
         };
         let secretKey = process.env.SECRET_KEY;
         let token = await jwt.sign(payload, secretKey, {
-          expiresIn: 36000000,
+          expiresIn: process.env.tokenLife,
+        });
+        // Tạo một mã token khác - Refresh token
+        const refreshToken = jwt.sign(payload, process.env.REFESTOKEN, {
+          expiresIn: process.env.refreshTokenLife,
         });
         const response = {
           token: token,
-          user: user,
+          refreshToken: refreshToken,
         };
+        refreshTokens[refreshToken] = response;
         return res
           .status(200)
           .json({ message: "Đăng nhập thành công !", data: response });
       }
     }
+  }
+
+  static async token(req: Request, res: Response) {
+
   }
 
   static async register(req: Request, res: Response) {

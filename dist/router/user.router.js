@@ -22,5 +22,10 @@ AuthRouter.post("/verify", (req, res, next) => {
         next(err);
     });
 });
+AuthRouter.post("/token", (req, res, next) => {
+    user_controller_1.UserController.token(req, res).catch((err) => {
+        next(err);
+    });
+});
 exports.default = AuthRouter;
 //# sourceMappingURL=user.router.js.map

@@ -26,5 +26,10 @@ AuthRouter.post("/verify", (req, res, next) => {
     next(err);
   });
 });
+AuthRouter.post("/token", (req, res, next) => {
+  UserController.token(req, res).catch((err) => {
+    next(err);
+  });
+});
 
 export default AuthRouter;
