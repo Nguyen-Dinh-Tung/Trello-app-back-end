@@ -8,6 +8,6 @@ const broadSchema = new mongoose_1.default.Schema({
     title: String,
     mode: String,
 });
-const BroadModels = mongoose_1.default.model("Broad", broadSchema);
+const BroadModels = mongoose_1.default.model("broad", broadSchema);
 exports.default = BroadModels;
 //# sourceMappingURL=Broad.schema.js.map
