@@ -1,3 +1,5 @@
+import { checkToken } from "../middleware/checkToken";
+import { MmController } from "../controllers/user.controller";
 import express from "express";
 import { Router, Request, Response } from "express";
 const usersRouter = express.Router();
@@ -9,16 +11,6 @@ usersRouter.post("/login", (req, res, next) => {
     next(err);
   });
 });
-usersRouter.post(
-  "/register",
-  validateUserSignUp,
-  userValidation,
-  (req, res, next) => {
-    UserController.register(req, res).catch((err) => {
-      next(err);
-    });
-  }
-);
 
 usersRouter.post("/verify", (req, res, next) => {
   UserController.verify(req, res).catch((err) => {

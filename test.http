@@ -12,11 +12,24 @@ POST http://localhost:8080/login
 Content-Type: application/json
 
 {
-   "email":"admin@gmail.com",
+   "email":"tuyen1@gmail.com",
    "password":"123123"
 
 }
+###
+POST http://localhost:8080/user/test
+Content-Type: application/json
 
+{
+   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQmV2ZXJseSBMbG95ZCIsInBhc3N3b3JkIjoiJDJiJDEwJDIuank2Y1d5QmxzbWc5Lzh2ZVlLOU9wSnB3WmdDTDNLcHQ3M0c0NVNYSndYTjlVL3UuRWlPIiwiaWF0IjoxNjY3MzUxNTk1LCJleHAiOjE2NjczNTE2MTB9._Mc_rq5TLckFMnH_l_JOD4RyUSfSy88Hz4NQnu2py8A"
+}
+###
+POST http://localhost:8080/token
+Content-Type: application/json
+
+{
+   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQmV2ZXJseSBMbG95ZCIsInBhc3N3b3JkIjoiJDJiJDEwJDIuank2Y1d5QmxzbWc5Lzh2ZVlLOU9wSnB3WmdDTDNLcHQ3M0c0NVNYSndYTjlVL3UuRWlPIiwiaWF0IjoxNjY3MzUzODczLCJleHAiOjE2NjczNTQxNzN9.GKpD5vGqGuJ-cBhciQNE_eP3cPAg3bx4g5qwvo-A718"
+}
 
 
 
