@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
-export declare class UserController {
-    static login(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
-    static token(req: Request, res: Response): Promise<void>;
-    static register(req: Request, res: Response): Promise<Response<any, Record<string, any>>>;
-    static verify(req: Request, res: Response): Promise<void>;
+export declare class MmController {
+    static test(req: Request, res: Response): Promise<void>;
 }
-declare const _default: UserController;
+declare const _default: MmController;
 export default _default;

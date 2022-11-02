@@ -14,16 +14,17 @@ export const checkToken = (req: any, res: Response, next: NextFunction) => {
     );
     jwt.verify(token, process.env.SECRET_KEY, function (err: any, decoded) {
       if (err) {
-        console.error(err.toString());
+        // console.log(11);
         return res
-          .status(401)
-          .json({ error: true, message: "Unauthorized access.", err });
+          .status(200)
+          .json({ error: false, message: "Unauthorized access.", err });
       }
       req.decoded = decoded;
       console.log(`decoded>>${decoded}`);
       next();
     });
   } else {
+    // console.log(1);
     return res.status(403).send({
       error: true,
       message: "No token provided.",

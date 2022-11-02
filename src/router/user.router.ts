@@ -1,5 +1,8 @@
+import { checkToken } from "../middleware/checkToken";
+import { MmController } from "../controllers/user.controller";
 import express from "express";
 import { Router, Request, Response } from "express";
+<<<<<<< HEAD
 const usersRouter = express.Router();
 import { userValidation, validateUserSignUp } from "../middleware/validation";
 import { UserController } from "../controllers/user.controller";
@@ -27,10 +30,18 @@ usersRouter.post("/verify", (req, res, next) => {
 });
 usersRouter.post("/token", (req, res, next) => {
   UserController.token(req, res).catch((err) => {
+=======
+const MmRouter = express.Router();
+
+MmRouter.use(checkToken);
+MmRouter.post("/test", (req, res, next) => {
+  MmController.test(req, res).catch((err) => {
+>>>>>>> efbe9dd (add)
     next(err);
   });
 });
 
+<<<<<<< HEAD
 usersRouter.post('/broad', async (req: Request, res: Response) => {
   let title = req.body.title;
   let mode = req.body.mode;
@@ -51,3 +62,6 @@ usersRouter.post('/broad', async (req: Request, res: Response) => {
   }
 })
 export default usersRouter;
+=======
+export default MmRouter;
+>>>>>>> efbe9dd (add)

@@ -36,10 +36,9 @@ const checkToken = (req, res, next) => {
         console.log("🚀 ~ file: checkToken.ts ~ line 11 ~ checkToken ~ token", token);
         jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY, function (err, decoded) {
             if (err) {
-                console.error(err.toString());
                 return res
-                    .status(401)
-                    .json({ error: true, message: "Unauthorized access.", err });
+                    .status(200)
+                    .json({ error: false, message: "Unauthorized access.", err });
             }
             req.decoded = decoded;
             console.log(`decoded>>${decoded}`);
