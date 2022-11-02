@@ -1,27 +1,43 @@
 import express from "express";
 import { Router, Request, Response } from "express";
-const usersRouter = express.Router();
+const authRouter = express.Router();
 import { userValidation, validateUserSignUp } from "../middleware/validation";
-import { AuthController } from "../controllers/auth.controller";
 import BroadModels from "../models/schemas/Broad.schema";
-usersRouter.post("/login", (req, res, next) => {
+import { AuthController } from "../controllers/auth.controller";
+
+authRouter.post("/login", (req, res, next) => {
   AuthController.login(req, res).catch((err) => {
     next(err);
   });
 });
+authRouter.post(
+  "/register",
+  validateUserSignUp,
+  userValidation,
+  (req, res, next) => {
+    AuthController.register(req, res).catch((err) => {
+      next(err);
+    });
+  }
+);
 
-usersRouter.post("/verify", (req, res, next) => {
+authRouter.post("/verify", (req, res, next) => {
   AuthController.verify(req, res).catch((err) => {
     next(err);
   });
 });
-usersRouter.post("/token", (req, res, next) => {
+authRouter.post("/token", (req, res, next) => {
   AuthController.token(req, res).catch((err) => {
     next(err);
   });
 });
+authRouter.post("/google", (req, res, next) => {
+  AuthController.registerGoogle(req, res).catch((err) => {
+    next(err);
+  });
+});
 
-usersRouter.post("/broad", async (req: Request, res: Response) => {
+authRouter.post("/broad", async (req: Request, res: Response) => {
   let title = req.body.title;
   let mode = req.body.mode;
   if (title && mode) {
@@ -41,4 +57,5 @@ usersRouter.post("/broad", async (req: Request, res: Response) => {
     });
   }
 });
-export default usersRouter;
+
+export default authRouter;

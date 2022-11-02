@@ -22,15 +22,35 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MmController = void 0;
+exports.checkToken = void 0;
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-class MmController {
-    static async test(req, res) {
-        res.json({ status: "success tuyen", elements: "hello" });
+const checkToken = (req, res, next) => {
+    const token = req.body.token || req.query.token || req.headers["x-access-token"];
+    if (token) {
+        console.log("🚀 ~ file: checkToken.ts ~ line 11 ~ checkToken ~ token", token);
+        jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY, function (err, decoded) {
+            if (err) {
+                return res
+                    .status(200)
+                    .json({ error: false, message: "Unauthorized access.", err });
+            }
+            req.decoded = decoded;
+            console.log(`decoded>>${decoded}`);
+            next();
+        });
     }
-}
-exports.MmController = MmController;
-exports.default = new MmController();
-//# sourceMappingURL=user.controller.js.map
+    else {
+        return res.status(403).send({
+            error: true,
+            message: "No token provided.",
+        });
+    }
+};
+exports.checkToken = checkToken;
+//# sourceMappingURL=checkToken.js.map

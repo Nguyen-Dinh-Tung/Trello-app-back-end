@@ -23,6 +23,7 @@ coverage
 .env
 
 # Dependency directory
+
 node_modules
 bower_components
 
@@ -39,3 +40,6 @@ dist/**/*
 
 # ignore yarn.lock
 yarn.lock
+
+
+
