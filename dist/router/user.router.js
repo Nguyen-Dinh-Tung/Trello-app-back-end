@@ -27,6 +27,7 @@ usersRouter.post("/token", (req, res, next) => {
     user_controller_1.UserController.token(req, res).catch((err) => {
         next(err);
     });
+});
 usersRouter.post('/broad', async (req, res) => {
     let title = req.body.title;
     let mode = req.body.mode;
