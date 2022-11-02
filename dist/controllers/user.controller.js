@@ -60,10 +60,10 @@ class UserController {
                 };
                 let secretKey = process.env.SECRET_KEY;
                 let token = await jsonwebtoken_1.default.sign(payload, secretKey, {
-                    expiresIn: process.env.tokenLife,
+                    expiresIn: 10,
                 });
                 const refreshToken = jsonwebtoken_1.default.sign(payload, process.env.REFESTOKEN, {
-                    expiresIn: process.env.refreshTokenLife,
+                    expiresIn: 300,
                 });
                 const response = {
                     token: token,
@@ -76,7 +76,8 @@ class UserController {
             }
         }
     }
-    static async token(req, res) { }
+    static async token(req, res) {
+    }
     static async register(req, res) {
         let user = req.body;
         console.log("🚀 ~ file: user.controller.ts ~ line 62 ~ UserController ~ register ~ user", user);
