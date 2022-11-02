@@ -9,6 +9,7 @@ const userSchemas = new mongoose_1.default.Schema({
     email: String,
     role: String,
     email_verify: String,
+    google_id: String,
     image: String,
     password: String,
 });

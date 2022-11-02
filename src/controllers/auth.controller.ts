@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import Users from "../models/schemas/user.schema";
-import UsersGoogle from "../models/schemas/userGoogle.schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 dotenv.config();
 import { senMail } from "../utils/mailer";
+import jwt_decode from "jwt-decode";
 
 const refreshTokens = {};
 export class AuthController {
@@ -57,39 +57,28 @@ export class AuthController {
   }
 
   static async token(req: any, res: Response) {
-    // refresh the damn token
-    const refreshToken = req.body;
-    console.log(
-      "🚀 ~ file: user.controller.ts ~ line 62 ~ UserController ~ token ~ refreshToken",
-      refreshToken
-    );
-    // if refresh token exists
-    if (refreshToken) {
-      const user = {
-        username: "tuyen1@gmail.com ",
-        password: "123123",
+    const refreshTokenClient = req.body;
+    if (refreshTokenClient) {
+      const dataClient = jwt.decode(refreshTokenClient.refreshToken);
+      let sendData = {
+        name: dataClient["name"],
+        password: dataClient["password"],
       };
-
-      jwt.verify(
-        refreshToken,
-        process.env.REFESTOKEN,
-        function (err: any, decoded) {
-          if (err) {
-            console.log(11);
-          }
-          req.decoded = decoded;
-          console.log(req.decoded, "decod");
-          console.log(`decoded>>${decoded}`);
-        }
+      console.log(
+        "🚀 ~ file: auth.controller.ts ~ line 67 ~ AuthController ~ token ~ sendData",
+        sendData
       );
 
-      const token = jwt.sign(user, process.env.SECRET_KEY, {
+      const token = jwt.sign(sendData, process.env.SECRET_KEY, {
         expiresIn: 15,
+      });
+      const refreshToken = jwt.sign(sendData, process.env.REFESTOKEN, {
+        expiresIn: 300,
       });
       const response = {
         token: token,
+        refreshToken: refreshToken,
       };
-      // refreshTokens[refreshToken].token = token;
       res.status(200).json(response);
     } else {
       res.status(400).send("Invalid request");
@@ -174,6 +163,7 @@ export class AuthController {
     });
   }
   static async registerGoogle(req: Request, res: Response) {
+    console.log(req.body);
     let data = {
       name: req.body.name,
       email: req.body.email,
@@ -182,9 +172,15 @@ export class AuthController {
       role: "user",
       email_verify: req.body.email_verified,
     };
-    let userByGoogleId = await UsersGoogle.findOne({
-      google_id: data.google_id,
+
+    let userByGoogleId = await Users.findOne({
+      email: data.email,
     });
+    console.log(
+      "🚀 ~ file: auth.controller.ts ~ line 189 ~ AuthController ~ registerGoogle ~ userByGoogleId",
+      userByGoogleId
+    );
+
     if (userByGoogleId) {
       let payload = {
         name: userByGoogleId.name,
@@ -193,6 +189,7 @@ export class AuthController {
         image: userByGoogleId.image,
       };
       let secretKey = process.env.SECRET_KEY;
+      4;
       let token = await jwt.sign(payload, secretKey, {
         expiresIn: 15,
       });
@@ -207,16 +204,26 @@ export class AuthController {
         .status(200)
         .json({ message: "Đăng nhập thành công !", data: response });
     } else {
-      let newdata = await UsersGoogle.create(data, (err, data) => {
+      let newData = {
+        name: req.body.name,
+        email: req.body.email,
+        google_id: req.body.sub,
+        image: req.body.picture,
+        role: "user",
+        email_verify: req.body.email_verified,
+        password: "",
+      };
+      let newdata = await Users.create(newData, (err, data) => {
         if (err) {
           console.log(err);
         } else {
           let payload = {
-            name: userByGoogleId.name,
-            email: userByGoogleId.email,
-            role: userByGoogleId.role,
-            image: userByGoogleId.image,
+            name: data.name,
+            email: data.email,
+            role: data.role,
+            image: data.image,
           };
+          console.log(payload);
           let secretKey = process.env.SECRET_KEY;
           let token = jwt.sign(payload, secretKey, {
             expiresIn: 15,

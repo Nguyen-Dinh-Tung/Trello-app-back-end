@@ -28,7 +28,7 @@ POST http://localhost:8080/token
 Content-Type: application/json
 
 {
-   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQmV2ZXJseSBMbG95ZCIsInBhc3N3b3JkIjoiJDJiJDEwJDIuank2Y1d5QmxzbWc5Lzh2ZVlLOU9wSnB3WmdDTDNLcHQ3M0c0NVNYSndYTjlVL3UuRWlPIiwiaWF0IjoxNjY3MzUzODczLCJleHAiOjE2NjczNTQxNzN9.GKpD5vGqGuJ-cBhciQNE_eP3cPAg3bx4g5qwvo-A718"
+   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQmV2ZXJseSBMbG95ZCIsInBhc3N3b3JkIjoiJDJiJDEwJDIuank2Y1d5QmxzbWc5Lzh2ZVlLOU9wSnB3WmdDTDNLcHQ3M0c0NVNYSndYTjlVL3UuRWlPIiwiaWF0IjoxNjY3Mzk4MTc3LCJleHAiOjE2NjczOTg0Nzd9.8Ta9AY8-0iW7LdvUGT2ys7KnihPtaIVpIrGQQ2gX6fY"
 }
 
 
