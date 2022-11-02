@@ -26,21 +26,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkToken = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-module.exports = (req, res, next) => {
+const checkToken = (req, res, next) => {
     const token = req.body.token || req.query.token || req.headers["x-access-token"];
     if (token) {
+        console.log("🚀 ~ file: checkToken.ts ~ line 11 ~ checkToken ~ token", token);
         jsonwebtoken_1.default.verify(token, process.env.SECRET_KEY, function (err, decoded) {
             if (err) {
-                console.error(err.toString());
                 return res
-                    .status(401)
-                    .json({ error: true, message: "Unauthorized access.", err });
+                    .status(200)
+                    .json({ error: false, message: "Unauthorized access.", err });
             }
-            console.log(`decoded>>${decoded}`);
             req.decoded = decoded;
+            console.log(`decoded>>${decoded}`);
             next();
         });
     }
@@ -51,4 +52,5 @@ module.exports = (req, res, next) => {
         });
     }
 };
+exports.checkToken = checkToken;
 //# sourceMappingURL=checkToken.js.map

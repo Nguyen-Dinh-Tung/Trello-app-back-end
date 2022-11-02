@@ -22,127 +22,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserController = void 0;
-const user_schema_1 = __importDefault(require("../models/schemas/user.schema"));
-const bcrypt_1 = __importDefault(require("bcrypt"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+exports.MmController = void 0;
 const dotenv = __importStar(require("dotenv"));
 dotenv.config();
-const mailer_1 = require("../utils/mailer");
-const refreshTokens = {};
-class UserController {
-    static async login(req, res) {
-        let data = {
-            email: req.body.email,
-            password: req.body.password,
-        };
-        let user = await user_schema_1.default.findOne({ email: data.email });
-        if (!user) {
-            return res
-                .status(200)
-                .json({ message: "Đăng nhập thất bại! Vui lòng thử lại !" });
-        }
-        else {
-            let comparePassword = await bcrypt_1.default.compare(data.password, user.password);
-            if (!comparePassword) {
-                return res
-                    .status(200)
-                    .json({ message: "Sai mật khẩu ! Vui lòng thử lại !" });
-            }
-            else {
-                let payload = {
-                    name: user.name,
-                    password: user.password,
-                };
-                let secretKey = process.env.SECRET_KEY;
-                let token = await jsonwebtoken_1.default.sign(payload, secretKey, {
-                    expiresIn: 10,
-                });
-                const refreshToken = jsonwebtoken_1.default.sign(payload, process.env.REFESTOKEN, {
-                    expiresIn: 300,
-                });
-                const response = {
-                    token: token,
-                    refreshToken: refreshToken,
-                };
-                refreshTokens[refreshToken] = response;
-                return res
-                    .status(200)
-                    .json({ message: "Đăng nhập thành công !", data: response });
-            }
-        }
-    }
-    static async token(req, res) {
-    }
-    static async register(req, res) {
-        let user = req.body;
-        console.log("🚀 ~ file: user.controller.ts ~ line 62 ~ UserController ~ register ~ user", user);
-        let Email = user.email;
-        let userByEmail = await user_schema_1.default.findOne({ email: Email });
-        let userByName = await user_schema_1.default.findOne({ name: user.name });
-        if (userByName) {
-            return res.json({ message: "Name đã tồn tại !" });
-        }
-        else if (userByEmail) {
-            return res.json({ message: "Email đã tồn tại !" });
-        }
-        else {
-            user.password = await bcrypt_1.default.hash(user.password, parseInt(process.env.BCRYPT_SALT_ROUND));
-            let data = {
-                name: user.name,
-                email: user.email,
-                password: user.password,
-                email_verify: false,
-                image: "",
-            };
-            let newUser = await user_schema_1.default.create(data, (err, user) => {
-                if (err) {
-                    console.log(err);
-                }
-                else {
-                    bcrypt_1.default
-                        .hash(user.email, parseInt(process.env.BCRYPT_SALT_ROUND))
-                        .then((hashedEmail) => {
-                        console.log(`${process.env.APP_URL}/verify?email=${user.email}&token=${hashedEmail}`);
-                        (0, mailer_1.senMail)(user.email, "Verify Email", `<div style="padding: 10px; background-color: blue">
-                <div style="padding: 10px; background-color: white;">
-                    <h4 style="color: #ee1414; width: 100%; text-align: center; font-size: 20px;">Click here</h4>
-                    <div style="color: black; font-size: 35px; width: 100%; text-align: center; height: 50px;"><a href="${process.env.APP_URL}/register/verify?email=${user.email}&token=${hashedEmail}"> Verify </a></div>
-                </div>
-                </div> `);
-                        return res.status(200).json({
-                            email: user.email,
-                            token: hashedEmail,
-                        });
-                    });
-                }
-            });
-        }
-    }
-    static async verify(req, res) {
-        console.log(req.body);
-        bcrypt_1.default.compare(req.body.email, req.body.token, (err, result) => {
-            if (result === true) {
-                user_schema_1.default.findOneAndUpdate({ email: `${req.body.email}` }, { email_verify: true }, function (err, docs) {
-                    if (err) {
-                        console.log(err);
-                    }
-                    else {
-                        console.log(1);
-                        return res.status(200).json({ message: "verify thanh cong!" });
-                    }
-                });
-            }
-            else {
-                return res.status(200).json({ message: "404" });
-            }
-        });
+class MmController {
+    static async test(req, res) {
+        res.json({ status: "success tuyen", elements: "hello" });
     }
 }
-exports.UserController = UserController;
-exports.default = new UserController();
+exports.MmController = MmController;
+exports.default = new MmController();
 //# sourceMappingURL=user.controller.js.map
